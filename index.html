@@ -42,9 +42,15 @@
 
          	});
 
-         	function playSound(){
-         		var audio = new Audio(mySound);
+         	socket.on("sound", function(data){
+         		console.log("received sound: "+instruments[data]);
+         		var audio = new Audio(audioFiles[data]);
          		audio.play();
+         	});
+
+         	function playSound(){
+         		console.log("sending sound: " + instruments[myInstrumentIndex]);
+         		socket.emit("sendsound",myInstrumentIndex);
          	}
 
 		</script>

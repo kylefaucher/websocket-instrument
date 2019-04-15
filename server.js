@@ -57,7 +57,11 @@ io.sockets.on('connection',
 		numOfPlayers++;
 		io.sockets.emit("sendnumplayers",numOfPlayers);
 
-
+		socket.on("sendsound", function(data){
+			console.log("sound received from " + socket.id + ", sending to clients");
+			var sendingsound = data;
+			socket.emit("sound",sendingsound);
+		});
 
 		socket.on('disconnect', function() {
 			console.log("Client has disconnected " + socket.id);
