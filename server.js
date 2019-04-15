@@ -31,7 +31,7 @@ function requestHandler(req, res) {
   	);
 }
 
-//ADD FUNCTIONALITY SO ALL PHONES PLAY EVERY SOUND
+
 
 
 // WebSocket Portion
