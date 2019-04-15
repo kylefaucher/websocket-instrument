@@ -60,7 +60,7 @@ io.sockets.on('connection',
 		socket.on("sendsound", function(data){
 			console.log("sound received from " + socket.id + ", sending to clients");
 			var sendingsound = data;
-			socket.emit("sound",sendingsound);
+			io.emit("sound",sendingsound);
 		});
 
 		socket.on('disconnect', function() {

@@ -39,19 +39,23 @@
          	socket.on("sendnumplayers", function(data){
 
          			document.getElementById("number").innerHTML = "Number of Players: " + data;
-
          	});
+
+         	var audio;
+
+         	function playSound(){
+         
+         		console.log("sending sound: " + instruments[myInstrumentIndex]);
+         		socket.emit("sendsound",myInstrumentIndex);
+         		audio = new Audio("audiofiles/silent.mp3");
+         		audio.play();
+         	}
 
          	socket.on("sound", function(data){
          		console.log("received sound: "+instruments[data]);
-         		var audio = new Audio(audioFiles[data]);
+         		audio.src = audioFiles[data];
          		audio.play();
          	});
-
-         	function playSound(){
-         		console.log("sending sound: " + instruments[myInstrumentIndex]);
-         		socket.emit("sendsound",myInstrumentIndex);
-         	}
 
 		</script>
 
@@ -61,17 +65,19 @@
  <body>
 <!-- ip:  142.93.89.137 -->
 
+<div id = container>
+	 <div id="instrument">
+	Instrument: 
+	 </div>
 
- <div id="instrument">
-Instrument: 
- </div>
+	 <div id="number">
+	Players: 
+	 </div>
 
- <div id="number">
-Number of Players: 
- </div>
+	 <div id = picture>
+	 </div>
 
- <div id = picture>
- </div>
+</div>
 
  <button id = "soundbutton" onclick="playSound()">
  	play
