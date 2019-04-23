@@ -19,7 +19,6 @@
 
 			});
 
-
 			socket.on('sendInstrument', function(data){
            
             		if (myInstrumentIndex == -1 ){

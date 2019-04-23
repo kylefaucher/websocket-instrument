@@ -3,6 +3,7 @@ var http = require('http');
 var fs = require('fs'); // Using the filesystem module
 var httpServer = http.createServer(requestHandler);
 var url = require('url');
+//var MonoSynth = require("Tone").MonoSynth;
 httpServer.listen(8080);
 
 var currentInstrumentIndex = 0;
@@ -44,6 +45,7 @@ io.sockets.on('connection',
 	// We are given a websocket object in our function
 	function (socket) {
 
+
 		console.log("We have a new client: " + socket.id);
 
 		io.sockets.emit("sendInstrument",currentInstrumentIndex);
@@ -71,4 +73,5 @@ io.sockets.on('connection',
 		});
 	}
 );
+
 

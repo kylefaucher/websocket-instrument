@@ -1,7 +1,112 @@
 <html>
 	<head>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src = "mobile.js"></script>
+      <script type="text/javascript" src="Tone.js"></script>
+
+		<script type="text/javascript">
+			var myInstrumentIndex = -1;
+
+			var myInstrument = " ";
+
+			var instruments = ["guitar", "tambourine","drum"];
+
+			var audioFiles = ["audiofiles/guitar.wav","audiofiles/tamborine.wav","audiofiles/kick.wav"];
+
+			var mySound = " ";
+
+			var images = ["img/guitar.png","img/tambourine.png","img/drum.png"];
+
+			var socket = io.connect();
+
+			var i = true;
+
+
+			socket.on('connect', function() {
+				console.log("Connected");
+
+			});
+
+
+			socket.on('sendInstrument', function(data){
+           
+            		if (myInstrumentIndex == -1 ){
+            			myInstrumentIndex = data;
+            			myInstrument = instruments[myInstrument];
+            			mySound = audioFiles[myInstrumentIndex];
+            			document.getElementById("instrument").innerHTML+= instruments[myInstrumentIndex];
+            			document.getElementById("picture").innerHTML = "<img src="+images[myInstrumentIndex]+" alt = picture</img>";
+            		}
+
+         	});
+
+         	socket.on("sendnumplayers", function(data){
+
+         			document.getElementById("number").innerHTML = "Number of Players: " + data;
+         	});
+
+         	// var audio = new Audio("audiofiles/silent.mp3");
+   
+         	// function playSound(){
+         		
+         	// 	console.log("sending sound: " + instruments[myInstrumentIndex]);
+         		
+         	// 	if (i==true)
+         	// 	{
+	         // 		console.log("playing silent sound");
+	         // 		// audio.play();
+	         // 		audio.play();
+	         // 		i = false;
+         	// 	}
+          //      socket.emit("sendsound",myInstrumentIndex);
+         	// }
+
+         	// socket.on("sound", function(data){
+          //      audio.src=audioFiles[data];
+          //      audio.load();
+         	// 	console.log("received sound: "+instruments[data]);
+         	// 	audio.play();
+         	// 	// document.getElementById("soundbutton").innerHTML+='.';
+         	// });
+
+         
+            var synth0 = new Tone.Synth().toMaster();
+            var synth1 = new Tone.Synth().toMaster();
+            var synth2 = new Tone.Synth().toMaster();
+   
+
+            function playSound(){
+
+               if (Tone.context.state !== 'running') {
+                  Tone.context.resume();
+               }
+
+               socket.emit("sendsound",myInstrumentIndex);
+               console.log("sending sound: " + instruments[myInstrumentIndex]);
+               // synth.triggerAttackRelease("C4", "8n");
+            }
+
+            socket.on("sound", function(data){
+               if (data==0)
+
+               synth0.triggerAttackRelease("C4", "8n");
+
+               else if (data ==1)
+
+               synth1.triggerAttackRelease("A4", "8n");
+
+               else if (data ==2)
+
+               synth2.triggerAttackRelease("G4", "8n");
+               // audio.src=audioFiles[data];
+               // audio.load();
+               console.log("received sound: "+instruments[data]);
+               // audio.play();
+               
+               // document.getElementById("soundbutton").innerHTML+='.';
+            });
+
+        
+		</script>
 
 	<link rel = stylesheet href = stylesheet.css>
 	</head>
