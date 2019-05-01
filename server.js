@@ -1,9 +1,11 @@
 // HTTP Portion
 var http = require('http');
 var fs = require('fs'); // Using the filesystem module
+
 var httpServer = http.createServer(requestHandler);
 var url = require('url');
 //var MonoSynth = require("Tone").MonoSynth;
+
 httpServer.listen(8080);
 
 var currentInstrumentIndex = 0;

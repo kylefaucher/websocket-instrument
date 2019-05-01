@@ -2,8 +2,11 @@
 	<head>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
       <script type="text/javascript" src="Tone.js"></script>
+      <script src="shake.js"></script>
 
-		<script type="text/javascript">
+      <link href="https://fonts.googleapis.com/css?family=Comfortaa|Gugi|Righteous" rel="stylesheet">
+
+		<script type="text/javascript" >
 			var myInstrumentIndex = -1;
 
 			var myInstrument = " ";
@@ -14,12 +17,13 @@
 
 			var mySound = " ";
 
-			var images = ["img/guitar.png","img/tambourine.png","img/drum.png"];
+			// var images = ["img/guitar.png","img/tambourine.png","img/drum.png"];
 
 			var socket = io.connect();
 
 			var i = true;
 
+         var soundindex = 0;
 
 			socket.on('connect', function() {
 				console.log("Connected");
@@ -27,55 +31,115 @@
 			});
 
 
-			socket.on('sendInstrument', function(data){
-           
-            		if (myInstrumentIndex == -1 ){
-            			myInstrumentIndex = data;
-            			myInstrument = instruments[myInstrument];
-            			mySound = audioFiles[myInstrumentIndex];
-            			document.getElementById("instrument").innerHTML+= instruments[myInstrumentIndex];
-            			document.getElementById("picture").innerHTML = "<img src="+images[myInstrumentIndex]+" alt = picture</img>";
-            		}
 
-         	});
+
+        
+
+
+			// socket.on('sendInstrument', function(data){
+           
+   //          		if (myInstrumentIndex == -1 ){
+   //          			myInstrumentIndex = data;
+   //          			myInstrument = instruments[myInstrument];
+   //          			mySound = audioFiles[myInstrumentIndex];
+   //          			document.getElementById("instrument").innerHTML+= instruments[myInstrumentIndex];
+   //          			document.getElementById("picture").innerHTML = "<img src="+images[myInstrumentIndex]+" alt = picture</img>";
+   //          		}
+
+   //       	});
+
+            
 
          	socket.on("sendnumplayers", function(data){
 
-         			document.getElementById("number").innerHTML = "Number of Players: " + data;
+         			document.getElementById("number").innerHTML = "Players: " + data;
+                  var j =0;
+                  document.getElementById("otherplayers").innerHTML ='';
+                  for (j=0;j<data;j++)
+                  {
+                     document.getElementById("otherplayers").innerHTML += "<div class = 'circle'></div>";
+                 
+                  }
+
          	});
-
-         	// var audio = new Audio("audiofiles/silent.mp3");
-   
-         	// function playSound(){
-         		
-         	// 	console.log("sending sound: " + instruments[myInstrumentIndex]);
-         		
-         	// 	if (i==true)
-         	// 	{
-	         // 		console.log("playing silent sound");
-	         // 		// audio.play();
-	         // 		audio.play();
-	         // 		i = false;
-         	// 	}
-          //      socket.emit("sendsound",myInstrumentIndex);
-         	// }
-
-         	// socket.on("sound", function(data){
-          //      audio.src=audioFiles[data];
-          //      audio.load();
-         	// 	console.log("received sound: "+instruments[data]);
-         	// 	audio.play();
-         	// 	// document.getElementById("soundbutton").innerHTML+='.';
-         	// });
-
          
             var synth0 = new Tone.Synth().toMaster();
             var synth1 = new Tone.Synth().toMaster();
             var synth2 = new Tone.Synth().toMaster();
+            var synth3 = new Tone.Synth().toMaster();
+            var synth4 = new Tone.Synth().toMaster();
+            var synth5 = new Tone.Synth().toMaster();
+            var synth6 = new Tone.Synth().toMaster();
+            var synth7 = new Tone.Synth().toMaster();
+            var synth8 = new Tone.Synth().toMaster();
+            var synth9 = new Tone.Synth().toMaster();
    
 
             function playSound(){
 
+               document.getElementById("soundbutton").style.opacity = "0.2";
+
+                var input = document.getElementById("slider");
+                  var inputVal = "";
+                  if (input) {
+                     // input.addEventListener("change",function(){
+                     //    inputVal = input.value;
+                     //    console.log("slidervalue " + inputVal);
+                     //    socket.emit("sendsound",inputVal);
+
+                     // });
+
+                     input.addEventListener("input",function(){
+                        inputVal = input.value;
+                        console.log("slidervalue " + inputVal);
+                        synth0.triggerAttackRelease(inputVal, "8n");
+
+                        // socket.emit("sendsound",inputVal);
+                       // socket.emit("sendsound",inputVal);
+                        // soundindex++;
+                     });
+
+                     input.addEventListener("click",function(){
+                        inputVal = input.value;
+                        console.log("slidervalue " + inputVal);
+                        // socket.emit("sendsound",inputVal);
+                        socket.emit("sendsound",inputVal);
+                        soundindex++;
+                     });
+
+                      input.addEventListener("touchstart",function(){
+                        inputVal = input.value;
+                        console.log("slidervalue " + inputVal);
+                        // socket.emit("sendsound",inputVal);
+                        socket.emit("sendsound",inputVal);
+                        soundindex++;
+                     });
+                     
+                  }
+         
+
+               if (Tone.context.state !== 'running') {
+                  Tone.context.resume();
+               }
+
+
+
+               // socket.emit("sendsound",myInstrumentIndex);
+               
+               console.log("sending sound: " + instruments[myInstrumentIndex]);
+               // synth.triggerAttackRelease("C4", "8n");
+            }
+
+            var myShakeEvent = new Shake({
+            threshold: 15, // optional shake strength threshold
+            timeout: 1000 // optional, determines the frequency of event generation
+            });
+
+            myShakeEvent.start();
+
+            window.addEventListener('shake', shakeEventDidOccur, false);
+      
+            function shakeEventDidOccur () {
                if (Tone.context.state !== 'running') {
                   Tone.context.resume();
                }
@@ -86,24 +150,54 @@
             }
 
             socket.on("sound", function(data){
-               if (data==0)
 
-               synth0.triggerAttackRelease("C4", "8n");
 
-               else if (data ==1)
+               console.log("frequency: " + data);
+               
 
-               synth1.triggerAttackRelease("A4", "8n");
+               if (soundindex%10==0)
 
-               else if (data ==2)
+               synth0.triggerAttackRelease(data, "8n");
 
-               synth2.triggerAttackRelease("G4", "8n");
+               else if (soundindex%10==1)
+
+               synth1.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==2)
+
+                synth2.triggerAttackRelease(data, "8n");
+
+
+               else if (soundindex%10==3)
+                   synth3.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==4)
+                   synth4.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==5)
+                   synth5.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==6)
+                   synth6.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==7)
+                   synth7.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==8)
+                   synth8.triggerAttackRelease(data, "8n");
+
+               else if (soundindex%10==9)
+                   synth9.triggerAttackRelease(data, "8n");
+
+               synth2.triggerAttackRelease(data, "8n");
                // audio.src=audioFiles[data];
                // audio.load();
-               console.log("received sound: "+instruments[data]);
+               console.log("received sound: " + instruments[data]);
                // audio.play();
                
                // document.getElementById("soundbutton").innerHTML+='.';
             });
+
 
         
 		</script>
@@ -116,13 +210,19 @@
 <!-- url:  142.93.89.137:8080/index.html -->
 <!-- bit.ly: https://bit.ly/2IAAE9J -->
 
-<div id = container>
-	 <div id="instrument">
-	Instrument: 
-	 </div>
+ 
 
-	 <div id="number">
-	Players: 
+
+
+<div id = container>
+	 <!-- <div id="instrument">
+	Instrument: 
+	 </div> -->
+
+    <h1> <span class = headerword2>passing</span> notes  </h1>
+
+	 <div id="number" style="color:white;">
+	players: 
 	 </div>
 
 	 <div id = picture>
@@ -131,8 +231,14 @@
 </div>
 
  <button id = "soundbutton" onclick="playSound()">
- 	play
+ 	initalize
  </button>
 
+<div id = info>
+   Make sure your ringer is on and you've pressed "initialize," then begin playing!
+</div>
+ <input type = range id = "slider" min="0" max="800" step = "50">
+ <div id = "otherplayers">
+ </div>
  </body>
 </html>
