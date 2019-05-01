@@ -1,3 +1,3 @@
 # websocket-instrument
 
-![Alt text](img/qr.png?raw=true "Title")
+![Alt text](img/frame.png "Title")
